@@ -12,7 +12,6 @@ const LoginPage: React.FC = () => {
         event.preventDefault();
         try {
             const response = await loginUser({ email, password });
-            // Implementar redirecionamento após o login bem-sucedido
             console.log('Login bem-sucedido:', response);
         } catch (error) {
             setError('Credenciais inválidas. Tente novamente.');
@@ -20,10 +19,16 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-md">
+
+                <div className="flex items-center justify-center mb-4">
+                    <p className="text-2xl font-bold text-blue-600">Bem-vindo de volta!</p>
+                </div>
+
                 <h2 className="text-2xl font-bold text-center">Login</h2>
                 {error && <p className="text-red-500 text-center">{error}</p>}
+
                 <form onSubmit={handleLogin} className="space-y-4">
                     <Input
                         label="Email"
