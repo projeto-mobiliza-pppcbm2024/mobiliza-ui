@@ -55,6 +55,41 @@ const CarListingPage: React.FC = () => {
                     imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
                     pricePerDay: 200.00,
                 },
+                {
+                    id: '5',
+                    name: 'SUV Família',
+                    description: 'SUV espaçoso e ideal para toda a família.',
+                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
+                    pricePerDay: 200.00,
+                },
+                {
+                    id: '6',
+                    name: 'SUV Família',
+                    description: 'SUV espaçoso e ideal para toda a família.',
+                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
+                    pricePerDay: 200.00,
+                },
+                {
+                    id: '7',
+                    name: 'SUV Família',
+                    description: 'SUV espaçoso e ideal para toda a família.',
+                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
+                    pricePerDay: 200.00,
+                },
+                {
+                    id: '8',
+                    name: 'SUV Família',
+                    description: 'SUV espaçoso e ideal para toda a família.',
+                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
+                    pricePerDay: 200.00,
+                },
+                {
+                    id: '9',
+                    name: 'SUV Família',
+                    description: 'SUV espaçoso e ideal para toda a família.',
+                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
+                    pricePerDay: 200.00,
+                }
             ];
             setCars(defaultCars);
         } catch (error) {
@@ -72,7 +107,7 @@ const CarListingPage: React.FC = () => {
     };
 
     return (
-        <div className="p-4 bg-gray-100 h-screen">
+        <div className="p-4 bg-gray-100 100vh min-h-dvh w-dvw">
             {/* Barra de Pesquisa e Filtros */}
             <div className="flex items-center space-x-4 mb-6">
                 <input
