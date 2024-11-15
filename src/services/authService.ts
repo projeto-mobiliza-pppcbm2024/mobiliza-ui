@@ -7,7 +7,7 @@ interface LoginData {
 
 export const loginUser = async (data: LoginData) => {
     try {
-        const response = await axios.post('/api/login', data);
+        const response = await axios.post('https://mobiliza.onrender.com/login', data);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao fazer login');
@@ -19,13 +19,13 @@ interface RegisterData {
     password: string;
     cpf: string;
     cnh: string;
-    fullName: string;
+    name: string;
     phone: string;
 }
 
 export const registerUser = async (data: RegisterData) => {
     try {
-        const response = await axios.post('/register', data);
+        const response = await axios.post('https://mobiliza.onrender.com/user', data);
         return response.data;
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);

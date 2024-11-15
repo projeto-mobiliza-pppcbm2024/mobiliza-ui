@@ -8,14 +8,14 @@ const RegisterPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [cpf, setCpf] = useState('');
     const [cnh, setCnh] = useState('');
-    const [fullName, setFullName] = useState('');
+    const [name, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [error, setError] = useState('');
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const response = await registerUser({ email, password, cpf, cnh, fullName, phone });
+            const response = await registerUser({ email, password, cpf, cnh, name, phone });
             console.log('Cadastro bem-sucedido:', response);
         } catch (error) {
             setError('Erro ao realizar cadastro. Tente novamente.');
@@ -23,7 +23,7 @@ const RegisterPage: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
+        <div className="flex items-center justify-center 100vh w-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-md">
 
                 {/* Elemento de Boas-Vindas Centralizado */}
@@ -38,7 +38,7 @@ const RegisterPage: React.FC = () => {
                     <Input
                         label="Nome Completo"
                         type="text"
-                        value={fullName}
+                        value={name}
                         onChange={(e) => setFullName(e.target.value)}
                         required
                     />
