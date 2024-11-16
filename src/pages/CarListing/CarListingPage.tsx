@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import CarDetailsModal from '../../components/CarDetails/CarDetailsModal';
+import { fetchCars } from '../../services/carService';
 
 interface Car {
     id: string;
@@ -7,93 +8,42 @@ interface Car {
     description: string;
     imageUrl: string;
     pricePerDay: number;
+    seats: number;
+    transmission: string;
+    doors: number;
 }
 
 const CarListingPage: React.FC = () => {
     const [cars, setCars] = useState<Car[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCars, setFilteredCars] = useState<Car[]>([]);
+    const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [pickupDate, setPickupDate] = useState('');
+    const [returnDate, setReturnDate] = useState('');
 
     useEffect(() => {
-        fetchCars();
+        fetchCarsData();
     }, []);
 
     useEffect(() => {
         applyFilters();
     }, [searchTerm, cars]);
 
-    const fetchCars = async () => {
+    const fetchCarsData = async () => {
         try {
-            //const response = await axios.get('/cars');
-            //setCars(response.data);
-            const defaultCars: Car[] = [
-                {
-                    id: '1',
-                    name: 'SUV Compacto',
-                    description: 'Um SUV compacto confortável para a cidade.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Compacto',
-                    pricePerDay: 150.00,
-                },
-                {
-                    id: '2',
-                    name: 'Sedan Luxo',
-                    description: 'Um sedan de luxo com todos os recursos de conforto.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=Sedan+Luxo',
-                    pricePerDay: 300.00,
-                },
-                {
-                    id: '3',
-                    name: 'Esportivo Conversível',
-                    description: 'Carro esportivo conversível para uma experiência inesquecível.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=Esportivo+Conversível',
-                    pricePerDay: 500.00,
-                },
-                {
-                    id: '4',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                },
-                {
-                    id: '5',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                },
-                {
-                    id: '6',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                },
-                {
-                    id: '7',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                },
-                {
-                    id: '8',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                },
-                {
-                    id: '9',
-                    name: 'SUV Família',
-                    description: 'SUV espaçoso e ideal para toda a família.',
-                    imageUrl: 'https://via.placeholder.com/300x200?text=SUV+Família',
-                    pricePerDay: 200.00,
-                }
-            ];
-            setCars(defaultCars);
+            const carList = await fetchCars();
+            setCars(carList.map((car: any) => ({
+                ...car,
+                description: car.desription || car.description, // Corrigindo erro de grafia na API
+                imageUrl: `https://via.placeholder.com/300x200?text=${(car.name)}`, // Gerando imagem para demonstração
+                seats: car.seats || 4,
+                transmission: car.transmission || 'Manual',
+                doors: car.doors || 4,
+                pricePerDay: parseFloat(car.pricePerDay)
+            })));
         } catch (error) {
-            console.error('Erro ao buscar carros:', error);
+            console.error('Erro ao carregar os dados dos carros:', error);
         }
     };
 
@@ -106,25 +56,47 @@ const CarListingPage: React.FC = () => {
         setFilteredCars(filtered);
     };
 
+    const openModal = (car: Car) => {
+        setSelectedCar(car);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedCar(null);
+        setIsModalOpen(false);
+    };
+
     return (
-        <div className="p-4 bg-gray-100 100vh min-h-dvh w-dvw">
+        <div className="p-4 bg-gray-100 min-h-screen w-screen" >
             {/* Barra de Pesquisa e Filtros */}
-            <div className="flex items-center space-x-4 mb-6">
+            <div className="flex items-center space-x-4 mb-6 flex-wrap">
                 <input
                     type="text"
                     placeholder="Pesquisar carro..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-4 py-2 w-full md:w-1/2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-4 py-2 w-full md:w-1/4 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
                 />
-                {/* Adicionar aqui filtros adicionais, como categoria, preço, etc. */}
-                <select className="px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="date"
+                    value={pickupDate}
+                    onChange={(e) => setPickupDate(e.target.value)}
+                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                />
+                <input
+                    type="date"
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                />
+                {/* <select
+                    className="px-4 py-2 w-full md:w-1/4 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                >
                     <option value="">Todas as categorias</option>
                     <option value="SUV">SUV</option>
                     <option value="Sedan">Sedan</option>
                     <option value="Esportivo">Esportivo</option>
-                    {/* Outros filtros podem ser adicionados conforme necessário */}
-                </select>
+                </select> */}
             </div>
 
             {/* Lista de Carros */}
@@ -132,13 +104,27 @@ const CarListingPage: React.FC = () => {
                 {filteredCars.map(car => (
                     <div key={car.id} className="bg-white p-4 rounded shadow hover:shadow-md">
                         <img src={car.imageUrl} alt={car.name} className="w-full h-40 object-cover rounded mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">{car.name}</h3>
+                        <h3 className="text-gray-600 text-lg font-semibold mb-2">{car.name}</h3>
                         <p className="text-gray-600 text-sm mb-2">{car.description}</p>
-                        <p className="text-blue-600 font-bold mb-2">R$ {car.pricePerDay.toFixed(2)}/dia</p>
-                        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Alugar</button>
+                        <p className="text-red-500 font-bold mb-2">R$ {car.pricePerDay.toFixed(2)}/dia</p>
+                        <button
+                            onClick={() => openModal(car)}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        >
+                            Alugar
+                        </button>
                     </div>
                 ))}
             </div>
+
+            {/* Modal para exibir detalhes do carro */}
+            <CarDetailsModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                car={selectedCar}
+                pickupDate={pickupDate}
+                returnDate={returnDate}
+            />
         </div>
     );
 };
