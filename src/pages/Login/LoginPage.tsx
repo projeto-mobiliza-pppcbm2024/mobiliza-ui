@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
             <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-md">
 
                 <div className="flex items-center justify-center mb-4">
-                    <p className="text-2xl font-bold text-blue-600">Bem-vindo de volta!</p>
+                    <p className="text-2xl font-bold text-red-500">Bem-vindo de volta!</p>
                 </div>
 
                 <h2 className="text-2xl font-bold text-center">Login</h2>
