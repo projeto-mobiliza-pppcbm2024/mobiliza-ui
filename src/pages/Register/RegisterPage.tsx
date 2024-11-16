@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import { registerUser } from '../../services/authService';
@@ -11,11 +12,19 @@ const RegisterPage: React.FC = () => {
     const [name, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
             const response = await registerUser({ email, password, cpf, cnh, name, phone });
+
+            if (response.token) {
+                localStorage.setItem('authToken', response.token); // Armazena o token no localStorage
+                navigate('/car-list'); // Redireciona para a página de listagem de carros
+            } else {
+                setError('Erro ao autenticar. Tente novamente.');
+            }
             console.log('Cadastro bem-sucedido:', response);
         } catch (error) {
             setError('Erro ao realizar cadastro. Tente novamente.');

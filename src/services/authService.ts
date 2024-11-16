@@ -5,9 +5,13 @@ interface LoginData {
     password: string;
 }
 
-export const loginUser = async (data: LoginData) => {
+interface LoginResponse {
+    token: string;
+}
+
+export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
     try {
-        const response = await axios.post('https://mobiliza.onrender.com/login', data);
+        const response = await axios.post<LoginResponse>('https://mobiliza.onrender.com/login', data);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao fazer login');
@@ -23,12 +27,24 @@ interface RegisterData {
     phone: string;
 }
 
-export const registerUser = async (data: RegisterData) => {
+interface RegisterResponse {
+    id: number;
+    nome: string;
+    email: string;
+    cpf: string;
+    phone: string;
+    cnh: string;
+    token: string;
+}
+
+
+export const registerUser = async (data: RegisterData): Promise<RegisterResponse> => {
     try {
-        const response = await axios.post('https://mobiliza.onrender.com/user', data);
+        const response = await axios.post<RegisterResponse>('https://mobiliza.onrender.com/user', data);
         return response.data;
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);
         throw new Error('Não foi possível realizar o cadastro. Tente novamente.');
     }
 };
+
