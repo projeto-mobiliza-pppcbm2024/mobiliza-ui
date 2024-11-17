@@ -1,11 +1,31 @@
 :root {
+  --c00: #ffffff;
+  --c01: #f7f7f7;
+  --c02: #ededed;
+  --c03: #dedede;
+  --c04: #cccccc;
+  --c05: #b2b2b2;
+  --c06: #9c9c9c;
+  --c07: #717171;
+  --c08: #595959;
+  --c09: #404040;
+  --c10: #2e2e2e;
+  --c11: #111111;
+  --c12: #000000;
+  --g00: linear-gradient(#ad022a, #eb1a24);
+  --p01: #ff425b;
+  --p02: #f95063;
+  --p03: #ff1630;
+  --p04: #ad022a;
+  --p05: #760029;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--c12);
+  background-color: var(--c02);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

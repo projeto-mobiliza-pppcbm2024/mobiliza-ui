@@ -3,6 +3,24 @@
 
 .container {
   max-width: 1160px;
-  margin-left: 20px;
-  margin-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-title {
+  display: inline-block;
+  font: 700 3rem/1.25 "League Spartan", sans-serif;
+  text-transform: uppercase;
+  position: relative;
+  &::after {
+    display: block;
+    position: absolute;
+    content: "";
+    width: 50%;
+    height: 0.25rem;
+    background: var(--g00);
+    bottom: 0.25rem;
+  }
 }
