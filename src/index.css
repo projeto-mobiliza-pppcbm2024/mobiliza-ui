@@ -12,7 +12,7 @@
   --c10: #2e2e2e;
   --c11: #111111;
   --c12: #000000;
-  --g00: linear-gradient(#ad022a, #eb1a24);
+  --g00: linear-gradient(to right, #ad022a, #eb1a24);
   --p01: #ff425b;
   --p02: #f95063;
   --p03: #ff1630;
