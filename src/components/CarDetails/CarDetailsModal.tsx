@@ -7,7 +7,7 @@ interface CarDetailsModalProps {
         name: string;
         description: string;
         pricePerDay: number;
-        imageUrl: string;
+        image: string;
         seats: number;
         transmission: string;
         doors: number;
@@ -42,7 +42,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ isOpen, onClose, car,
                     X
                 </button>
                 <img
-                    src={car.imageUrl}
+                    src={car.image}
                     alt={car.name}
                     className="w-full h-40 object-cover rounded mb-4"
                 />
