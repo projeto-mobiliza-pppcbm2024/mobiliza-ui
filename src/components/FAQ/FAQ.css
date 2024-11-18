@@ -1,0 +1,12 @@
+.faq .faq-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  color: var(--c07);
+  &:nth-child(odd) {
+    background-color: var(--c02);
+  }
+  &:nth-child(even) {
+    background-color: var(--c01);
+  }
+}
