@@ -11,7 +11,6 @@ import decoIcon from "../../assets/icon/deco.svg";
 const HomePage: React.FC = () => {
   return (
     <>
-      <CarListingPage />
       <section className="grid catchphrase text-c07 uppercase bold mt-[7.5rem] container">
         <h2 className="text-c04 catchphrase-title text-center lg:text-left lg:text-4xl">
           <span className="text-c07">Explore</span>

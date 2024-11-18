@@ -1,26 +1,82 @@
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useNavigate } from 'react-router-dom'; // Importar o hook para navegação
+import { confirmLease } from '../../services/rentService';
 
 interface PaymentPopupProps {
     isOpen: boolean;
     totalAmount: number;
     onClose: () => void;
     onPaymentSuccess: () => void;
+    rentDetails: {
+        carId: string;
+        startDate: string;
+        finalDate: string;
+    };
 }
 
-const PaymentPopup: React.FC<PaymentPopupProps> = ({ totalAmount, onClose, onPaymentSuccess }) => {
+const PaymentPopup: React.FC<PaymentPopupProps> = ({
+    totalAmount,
+    onClose,
+    onPaymentSuccess,
+    rentDetails,
+}) => {
     const [paymentMethod, setPaymentMethod] = useState<'credit' | 'debit' | 'pix'>('credit');
     const [cardNumber, setCardNumber] = useState('');
     const [cardHolder, setCardHolder] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [cvv, setCvv] = useState('');
     const [installments, setInstallments] = useState(1);
-    const [pixCode, setPixCode] = useState('123.456.789-10');
+    const [pixCode] = useState('123.456.789-10');
 
-    const handlePayment = () => {
-        alert('Pagamento realizado com sucesso!');
-        onPaymentSuccess();
-        onClose();
+    const navigate = useNavigate(); // Inicializar o hook de navegação
+
+    const validatePaymentDetails = (): boolean => {
+        if (paymentMethod === 'pix') {
+            return true; // Nenhuma validação adicional necessária para PIX
+        }
+        return (
+            cardNumber.length === 16 &&
+            cardHolder.trim() !== '' &&
+            expiryDate.length === 5 &&
+            cvv.length === 3
+        );
+    };
+
+    const handlePayment = async () => {
+        if (!validatePaymentDetails()) {
+            alert('Por favor, preencha todas as informações de pagamento corretamente.');
+            return;
+        }
+
+        try {
+            const paymentDetails = {
+                installmentNumber: installments,
+                installmentAmount: totalAmount / installments,
+                paymentDate: new Date(),
+                paymentMethod: paymentMethod,
+            };
+
+            // Chamada ao método confirmLease
+            await confirmLease({
+                carId: rentDetails.carId,
+                startDate: new Date(rentDetails.startDate),
+                finalDate: new Date(rentDetails.finalDate),
+                paymentDetails,
+            });
+
+            alert('Aluguel confirmado com sucesso!');
+            onPaymentSuccess();
+            onClose();
+        } catch (error: any) {
+            if (error.message.includes('Token JWT não encontrado')) {
+                alert('Você precisa estar autenticado para confirmar o aluguel. Redirecionando para a página de login.');
+                navigate('/login'); // Redireciona para a página de login
+            } else {
+                console.error('Erro ao confirmar o aluguel:', error);
+                alert('Ocorreu um erro ao processar o pagamento. Tente novamente.');
+            }
+        }
     };
 
     const calculateInstallmentValue = (): string => {

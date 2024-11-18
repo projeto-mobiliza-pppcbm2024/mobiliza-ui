@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import PaymentModal from '../Payment/PaymentModal'; // Importar o componente de pagamento
+import PaymentPopup from '../Payment/PaymentModal'; // Importar o novo componente de pagamento
 
 interface CarDetailsModalProps {
     isOpen: boolean;
     onClose: () => void;
     car: {
+        id: string;
         name: string;
         description: string;
         pricePerDay: number;
@@ -18,7 +19,7 @@ interface CarDetailsModalProps {
 }
 
 const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ isOpen, onClose, car, pickupDate, returnDate }) => {
-    const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
     if (!isOpen || !car) return null;
 
@@ -37,7 +38,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ isOpen, onClose, car,
 
     const handleConfirmRental = () => {
         if (totalPrice !== null) {
-            setIsPaymentOpen(true); // Abrir o modal de pagamento
+            setIsPaymentModalOpen(true);
         } else {
             alert('Defina datas válidas para prosseguir com o aluguel.');
         }
@@ -91,13 +92,18 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ isOpen, onClose, car,
                     </button>
                 </div>
             </div>
-            {/* Modal de Pagamento */}
-            {isPaymentOpen && (
-                <PaymentModal
-                    isOpen={isPaymentOpen}
-                    onClose={() => setIsPaymentOpen(false)}
+            {/* Renderizar PaymentPopup apenas quando isPaymentModalOpen for true */}
+            {isPaymentModalOpen && (
+                <PaymentPopup
+                    isOpen={isPaymentModalOpen}
                     totalAmount={totalPrice!}
-                    onPaymentSuccess={() => alert('Função de aluguel em desenvolvimento')}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    onPaymentSuccess={() => alert('Aluguel finalizado com sucesso!')}
+                    rentDetails={{
+                        carId: car.id,
+                        startDate: pickupDate || '', // Garante que será uma string
+                        finalDate: returnDate || '', // Garante que será uma string
+                    }}
                 />
             )}
         </>
