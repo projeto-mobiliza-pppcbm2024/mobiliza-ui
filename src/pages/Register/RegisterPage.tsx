@@ -31,6 +31,23 @@ const RegisterPage: React.FC = () => {
         }
     };
 
+    const formatCpf = (value: string): string => {
+        return value
+            .replace(/\D/g, '') // Remove não numéricos
+            .slice(0, 11) // Limita a 11 caracteres
+            .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona o primeiro ponto
+            .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona o segundo ponto
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+    };
+
+    const formatPhone = (value: string): string => {
+        return value
+            .replace(/\D/g, '') // Remove não numéricos
+            .slice(0, 11) // Limita a 11 caracteres
+            .replace(/(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
+            .replace(/(\d{5})(\d{1,4})$/, '$1-$2'); // Adiciona o traço
+    };
+
     return (
         <div className="flex items-center justify-center 100vh min-h-dvh w-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-md">
@@ -69,21 +86,21 @@ const RegisterPage: React.FC = () => {
                         label="CPF"
                         type="text"
                         value={cpf}
-                        onChange={(e) => setCpf(e.target.value)}
+                        onChange={(e) => setCpf(formatCpf(e.target.value))}
                         required
                     />
                     <Input
                         label="CNH"
                         type="text"
                         value={cnh}
-                        onChange={(e) => setCnh(e.target.value)}
+                        onChange={(e) => setCnh(e.target.value.replace(/\D/g, '').slice(0, 11))} // Apenas números e máximo 11 caracteres
                         required
                     />
                     <Input
                         label="Celular"
                         type="tel"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => setPhone(formatPhone(e.target.value))}
                         required
                     />
                     <Button type="submit" label="Cadastrar" />
