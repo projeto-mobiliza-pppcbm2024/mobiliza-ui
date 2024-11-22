@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useNavigate } from 'react-router-dom'; // Importar o hook para navegação
+import { useNavigate } from 'react-router-dom';
 import { confirmLease } from '../../services/rentService';
 
 interface PaymentPopupProps {
@@ -10,8 +10,8 @@ interface PaymentPopupProps {
     onPaymentSuccess: () => void;
     rentDetails: {
         carId: string;
-        startDate: string;
-        finalDate: string;
+        startDate: string; // Mantém o formato esperado no serviço
+        finalDate: string; // Mantém o formato esperado no serviço
     };
 }
 
@@ -29,11 +29,11 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
     const [installments, setInstallments] = useState(1);
     const [pixCode] = useState('123.456.789-10');
 
-    const navigate = useNavigate(); // Inicializar o hook de navegação
+    const navigate = useNavigate();
 
     const validatePaymentDetails = (): boolean => {
         if (paymentMethod === 'pix') {
-            return true; // Nenhuma validação adicional necessária para PIX
+            return true;
         }
         return (
             cardNumber.length === 16 &&
@@ -52,18 +52,19 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
         try {
             const paymentDetails = {
                 installmentNumber: installments,
-                installmentAmount: totalAmount / installments,
-                paymentDate: new Date(),
-                paymentMethod: paymentMethod,
+                installmentAmount: Number((totalAmount / installments).toFixed(2)),
+                paymentDate: new Date().toISOString().split('T')[0], // Formata como yyyy-MM-dd
+                paymentMethod: paymentMethod.toUpperCase(), // Converte para letras maiúsculas
             };
 
-            // Chamada ao método confirmLease
-            await confirmLease({
+            const rentData = {
                 carId: rentDetails.carId,
-                startDate: new Date(rentDetails.startDate),
-                finalDate: new Date(rentDetails.finalDate),
+                startDate: rentDetails.startDate, // Já deve estar no formato yyyy-MM-dd
+                finalDate: rentDetails.finalDate, // Já deve estar no formato yyyy-MM-dd
                 paymentDetails,
-            });
+            };
+
+            await confirmLease(rentData);
 
             alert('Aluguel confirmado com sucesso!');
             onPaymentSuccess();
@@ -71,7 +72,7 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
         } catch (error: any) {
             if (error.message.includes('Token JWT não encontrado')) {
                 alert('Você precisa estar autenticado para confirmar o aluguel. Redirecionando para a página de login.');
-                navigate('/login'); // Redireciona para a página de login
+                navigate('/login');
             } else {
                 console.error('Erro ao confirmar o aluguel:', error);
                 alert('Ocorreu um erro ao processar o pagamento. Tente novamente.');
@@ -85,15 +86,17 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg">
-                <h2 className="text-xl font-bold mb-4">Pagamento</h2>
-                <p className="mb-4">Valor total: <span className="text-red-500 font-bold">R$ {totalAmount.toFixed(2)}</span></p>
+            <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-4 text-gray-700">Pagamento</h2>
+                <p className="mb-4 text-gray-700">
+                    Valor total: <span className="text-red-500 font-bold">R$ {totalAmount.toFixed(2)}</span>
+                </p>
 
-                <label className="block mb-2 font-semibold">Meio de pagamento:</label>
+                <label className="block mb-2 font-semibold text-gray-700">Meio de pagamento:</label>
                 <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value as 'credit' | 'debit' | 'pix')}
-                    className="w-full px-4 py-2 mb-4 border rounded"
+                    className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                 >
                     <option value="credit">Cartão de Crédito</option>
                     <option value="debit">Cartão de Débito</option>
@@ -102,43 +105,43 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
 
                 {paymentMethod !== 'pix' && (
                     <>
-                        <label className="block mb-2 font-semibold">Número do Cartão:</label>
+                        <label className="block mb-2 font-semibold text-gray-700">Número do Cartão:</label>
                         <input
                             type="text"
                             value={cardNumber}
                             onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))}
                             placeholder="Número do Cartão"
-                            className="w-full px-4 py-2 mb-4 border rounded"
+                            className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                         />
 
-                        <label className="block mb-2 font-semibold">Nome no Cartão:</label>
+                        <label className="block mb-2 font-semibold text-gray-700">Nome no Cartão:</label>
                         <input
                             type="text"
                             value={cardHolder}
                             onChange={(e) => setCardHolder(e.target.value)}
                             placeholder="Nome no Cartão"
-                            className="w-full px-4 py-2 mb-4 border rounded"
+                            className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                         />
 
                         <div className="flex space-x-4">
                             <div className="flex-1">
-                                <label className="block mb-2 font-semibold">Validade:</label>
+                                <label className="block mb-2 font-semibold text-gray-700">Validade:</label>
                                 <input
                                     type="text"
                                     value={expiryDate}
                                     onChange={(e) => setExpiryDate(e.target.value.replace(/\D/g, '').slice(0, 5))}
                                     placeholder="MM/AA"
-                                    className="w-full px-4 py-2 mb-4 border rounded"
+                                    className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                                 />
                             </div>
                             <div className="flex-1">
-                                <label className="block mb-2 font-semibold">CVV:</label>
+                                <label className="block mb-2 font-semibold text-gray-700">CVV:</label>
                                 <input
                                     type="text"
                                     value={cvv}
                                     onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
                                     placeholder="CVV"
-                                    className="w-full px-4 py-2 mb-4 border rounded"
+                                    className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                                 />
                             </div>
                         </div>
@@ -147,11 +150,11 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
 
                 {paymentMethod === 'credit' && (
                     <>
-                        <label className="block mb-2 font-semibold">Parcelas:</label>
+                        <label className="block mb-2 font-semibold text-gray-700">Parcelas:</label>
                         <select
                             value={installments}
                             onChange={(e) => setInstallments(Number(e.target.value))}
-                            className="w-full px-4 py-2 mb-4 border rounded"
+                            className="w-full px-4 py-2 mb-4 border rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
                         >
                             {[1, 2, 3, 4, 5].map((num) => (
                                 <option key={num} value={num}>
@@ -164,7 +167,7 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
 
                 {paymentMethod === 'pix' && (
                     <div className="mb-4">
-                        <p className="font-semibold mb-2">Código PIX:</p>
+                        <p className="font-semibold mb-2 text-gray-700">Código PIX:</p>
                         <div className="p-2 bg-gray-100 rounded border text-sm mb-4">
                             {pixCode}
                         </div>
@@ -177,13 +180,13 @@ const PaymentPopup: React.FC<PaymentPopupProps> = ({
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 focus:outline-none"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={handlePayment}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
                     >
                         Confirmar Pagamento
                     </button>

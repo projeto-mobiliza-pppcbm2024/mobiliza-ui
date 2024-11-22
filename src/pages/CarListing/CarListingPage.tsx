@@ -95,21 +95,21 @@ const CarListingPage: React.FC = () => {
                     placeholder="Pesquisar carro..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-4 py-2 w-full md:w-1/4 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="px-4 py-2 w-full md:w-1/4 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white text-gray-900 border-gray-300"
                 />
                 <input
                     type="date"
                     value={pickupDate}
                     onChange={(e) => setPickupDate(e.target.value)}
                     min={getTodayDate()} // Define a data mínima como hoje
-                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white text-gray-900 border-gray-300"
                 />
                 <input
                     type="date"
                     value={returnDate}
                     onChange={(e) => setReturnDate(e.target.value)}
                     min={pickupDate || getTodayDate()} // Define a data mínima como a data de aluguel ou hoje
-                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="px-4 py-2 w-full md:w-1/5 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white text-gray-900 border-gray-300"
                 />
             </div>
 
